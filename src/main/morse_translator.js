@@ -308,3 +308,124 @@
             }
         }
 
+        /**
+         *  TestRunner - Main testing orchestrator
+         */
+        class TestRunner {
+            constructor(translator) {
+                this.translator = translator;
+                this.testSuites = new Map();
+                this.setupTestSuites();
+            }
+
+            setupTestSuites() {
+                // Encoding Tests
+                const encodingSuite = new TestSuite('Encoding Tests');
+                encodingSuite.addTest(new TestCase('Basic Hello', 'Hello', '.... . .-.. .-.. ---', (input) => this.translator.encode(input)));
+                encodingSuite.addTest(new TestCase('SOS Emergency', 'SOS', '... --- ...', (input) => this.translator.encode(input)));
+                encodingSuite.addTest(new TestCase('Numbers Test', '123', '.---- ..--- ...--', (input) => this.translator.encode(input)));
+                encodingSuite.addTest(new TestCase('Phrase with Spaces', 'I like you', '.. / .-.. .. -.- . / -.-- --- ..-', (input) => this.translator.encode(input)));
+                encodingSuite.addTest(new TestCase('Mixed Case', 'HeLLo', '.... . .-.. .-.. ---', (input) => this.translator.encode(input)));
+                encodingSuite.addTest(new TestCase('With Punctuation', 'Help!', '.... . .-.. .--. -.-.--', (input) => this.translator.encode(input)));
+                encodingSuite.addTest(new TestCase('Empty String', '', '', (input) => this.translator.encode(input)));
+                
+                // Decoding Tests
+                const decodingSuite = new TestSuite('Decoding Tests');
+                decodingSuite.addTest(new TestCase('Basic Morse', '.... . .-.. .-.. ---', 'HELLO', (input) => this.translator.decode(input)));
+                decodingSuite.addTest(new TestCase('SOS Decode', '... --- ...', 'SOS', (input) => this.translator.decode(input)));
+                decodingSuite.addTest(new TestCase('Numbers Decode', '.---- ..--- ...--', '123', (input) => this.translator.decode(input)));
+                decodingSuite.addTest(new TestCase('Phrase Decode', '.. / .-.. .. -.- . / -.-- --- ..-', 'I LIKE YOU', (input) => this.translator.decode(input)));
+                decodingSuite.addTest(new TestCase('With Punctuation Decode', '.... . .-.. .--. -.-.--', 'HELP!', (input) => this.translator.decode(input)));
+                decodingSuite.addTest(new TestCase('Empty Morse', '', '', (input) => this.translator.decode(input)));
+                
+                // Edge Cases
+                const edgeCaseSuite = new TestSuite('Edge Cases');
+                edgeCaseSuite.addTest(new TestCase('Single Character', 'A', '.-', (input) => this.translator.encode(input)));
+                edgeCaseSuite.addTest(new TestCase('Single Morse', '.-', 'A', (input) => this.translator.decode(input)));
+                edgeCaseSuite.addTest(new TestCase('Multiple Spaces', 'A  B', '.- / -...', (input) => this.translator.encode(input)));
+                edgeCaseSuite.addTest(new TestCase('Special Characters', 'A@B', '.- .--.-. -...', (input) => this.translator.encode(input)));
+                
+                this.testSuites.set('encoding', encodingSuite);
+                this.testSuites.set('decoding', decodingSuite);
+                this.testSuites.set('edgeCases', edgeCaseSuite);
+            }
+
+            runAllTests() {
+                ui.showStatus(' Running comprehensive test suite...', 'success');
+                
+                let allResults = '<h4> R2-D2\'s Complete Test Report</h4>';
+                let totalPassed = 0;
+                let totalTests = 0;
+                
+                for (const [name, suite] of this.testSuites) {
+                    const result = suite.run();
+                    allResults += `<h5>${result.summary}</h5>`;
+                    allResults += result.details;
+                    totalPassed += suite.passedCount;
+                    totalTests += suite.totalCount;
+                }
+                
+                const overallRate = totalTests > 0 ? Math.round((totalPassed / totalTests) * 100) : 0;
+                allResults = `<div class="test-${overallRate === 100 ? 'pass' : 'fail'}"> Overall: ${totalPassed}/${totalTests} tests passed (${overallRate}%)</div><br>` + allResults;
+                
+                this.displayResults(allResults);
+                
+                if (overallRate === 100) {
+                    ui.showStatus(' All tests passed! R2-D2 is functioning perfectly!', 'success');
+                } else {
+                    ui.showStatus(`${totalTests - totalPassed} tests failed. R2-D2 needs some repairs!`, 'error');
+                }
+            }
+
+            runEncodingTests() {
+                ui.showStatus(' Running encoding tests...', 'success');
+                const suite = this.testSuites.get('encoding');
+                const result = suite.run();
+                
+                let output = `<h4> ${result.summary}</h4>`;
+                output += result.details;
+                
+                this.displayResults(output);
+                
+                if (suite.getSuccessRate() === 100) {
+                    ui.showStatus(' All encoding tests passed!', 'success');
+                } else {
+                    ui.showStatus('Some encoding tests failed!', 'error');
+                }
+            }
+
+            runDecodingTests() {
+                ui.showStatus(' Running decoding tests...', 'success');
+                const suite = this.testSuites.get('decoding');
+                const result = suite.run();
+                
+                let output = `<h4> ${result.summary}</h4>`;
+                output += result.details;
+                
+                this.displayResults(output);
+                
+                if (suite.getSuccessRate() === 100) {
+                    ui.showStatus('All decoding tests passed!', 'success');
+                } else {
+                    ui.showStatus('Some decoding tests failed!', 'error');
+                }
+            }
+
+            displayResults(html) {
+                const resultsDiv = document.getElementById('testResults');
+                resultsDiv.innerHTML = html;
+                resultsDiv.style.display = 'block';
+                
+                // Scroll to results
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Public method for custom tests
+            addCustomTest(suiteName, testCase) {
+                if (!this.testSuites.has(suiteName)) {
+                    this.testSuites.set(suiteName, new TestSuite(suiteName));
+                }
+                this.testSuites.get(suiteName).addTest(testCase);
+            }
+        }
+
