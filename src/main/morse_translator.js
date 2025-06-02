@@ -230,3 +230,81 @@
             }
         }
 
+        /**
+         * 🧪 TestCase - Individual test case class
+         */
+        class TestCase {
+            constructor(name, input, expected, testFunction) {
+                this.name = name;
+                this.input = input;
+                this.expected = expected;
+                this.testFunction = testFunction;
+                this.passed = false;
+                this.result = null;
+                this.error = null;
+            }
+
+            run() {
+                try {
+                    this.result = this.testFunction(this.input);
+                    this.passed = this.result === this.expected;
+                } catch (error) {
+                    this.error = error.message;
+                    this.passed = false;
+                }
+                return this.passed;
+            }
+
+            getReport() {
+                const status = this.passed ? '✅ PASS' : '❌ FAIL';
+                const className = this.passed ? 'test-pass' : 'test-fail';
+                
+                let report = `<div class="${className}">${status} - ${this.name}</div>`;
+                report += `<div>  Input: "${this.input}"</div>`;
+                report += `<div>  Expected: "${this.expected}"</div>`;
+                report += `<div>  Got: "${this.result || 'ERROR'}"</div>`;
+                
+                if (this.error) {
+                    report += `<div>  Error: ${this.error}</div>`;
+                }
+                
+                return report + '<br>';
+            }
+        }
+
+        /**
+         * TestSuite - Collection of related test cases
+         */
+        class TestSuite {
+            constructor(name) {
+                this.name = name;
+                this.tests = [];
+                this.passedCount = 0;
+                this.totalCount = 0;
+            }
+
+            addTest(testCase) {
+                this.tests.push(testCase);
+            }
+
+            run() {
+                this.passedCount = 0;
+                this.totalCount = this.tests.length;
+                
+                const results = this.tests.map(test => {
+                    const passed = test.run();
+                    if (passed) this.passedCount++;
+                    return test.getReport();
+                });
+
+                return {
+                    summary: ` ${this.name}: ${this.passedCount}/${this.totalCount} tests passed`,
+                    details: results.join('')
+                };
+            }
+
+            getSuccessRate() {
+                return this.totalCount > 0 ? (this.passedCount / this.totalCount) * 100 : 0;
+            }
+        }
+
