@@ -429,3 +429,39 @@
             }
         }
 
+        // Initialize R2-D2's Systems
+        const morseData = new MorseCodeData();
+        const translator = new MorseTranslator();
+        const sound = new SoundManager();
+        const ui = new UIManager();
+        const testRunner = new TestRunner(translator);
+
+        //  Event Listeners and Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            ui.initialize();
+            
+            // Keyboard shortcuts for power users
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            if (document.activeElement.id === 'textInput') {
+                                translator.encodeToMorse();
+                            } else if (document.activeElement.id === 'morseInput') {
+                                translator.decodeFromMorse();
+                            }
+                            break;
+                        case 't':
+                            e.preventDefault();
+                            testRunner.runAllTests();
+                            break;
+                        case 'd':
+                            e.preventDefault();
+                            ui.toggleTheme();
+                            break;
+                    }
+                }
+            });
+        });
+
