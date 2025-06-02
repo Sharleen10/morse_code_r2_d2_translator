@@ -54,6 +54,24 @@
                     <textarea id="morseOutput" readonly placeholder="Morse code will appear here..."></textarea>
                 </div>
             </div>
+
+                <!-- Morse to Text Section -->
+            <div class="translator-section">
+                <h2 class="section-title">📥 Decode Morse Code to Text</h2>
+                <div class="input-group">
+                    <label for="morseInput">Enter morse code (dots and dashes):</label>
+                    <textarea id="morseInput" placeholder=".... . .-.. .--. / -- ."></textarea>
+                </div>
+                <div class="button-group">
+                    <button onclick="translator.decodeFromMorse()">🔓 Decode from Morse</button>
+                    <button class="sound-btn" onclick="sound.playMorseSound('morseInput')">🔊 Play Morse</button>
+                    <button class="clear-btn" onclick="ui.clearMorse()">🗑️ Clear</button>
+                </div>
+                <div class="input-group">
+                    <label for="textOutput">Decoded Message:</label>
+                    <textarea id="textOutput" readonly placeholder="Decoded text will appear here..."></textarea>
+                </div>
+            </div>
       
 </body>
 </html>
