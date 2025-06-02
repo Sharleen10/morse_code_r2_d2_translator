@@ -72,6 +72,17 @@
                     <textarea id="textOutput" readonly placeholder="Decoded text will appear here..."></textarea>
                 </div>
             </div>
+
+     <!-- Unit Testing Section -->
+            <div class="translator-section">
+                <h2 class="section-title">🧪 R2-D2's Automated Testing Lab</h2>
+                <div class="button-group">
+                    <button class="test-btn" onclick="testRunner.runAllTests()">🚀 Run All Tests</button>
+                    <button class="test-btn" onclick="testRunner.runEncodingTests()">📤 Test Encoding</button>
+                    <button class="test-btn" onclick="testRunner.runDecodingTests()">📥 Test Decoding</button>
+                </div>
+                <div id="testResults" class="test-results" style="display: none;"></div>
+            </div>
       
 </body>
 </html>
