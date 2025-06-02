@@ -465,3 +465,57 @@
             });
         });
 
+         // 🧪 Global Testing Interface (for console access)
+        window.R2D2 = {
+            translator,
+            sound,
+            ui,
+            testRunner,
+            morseData,
+            
+            // Convenience methods
+            encode: (text) => translator.encode(text),
+            decode: (code) => translator.decode(code),
+            runTests: () => testRunner.runAllTests(),
+            
+            // Add custom test
+            addTest: (suiteName, name, input, expected, testFunction) => {
+                const testCase = new TestCase(name, input, expected, testFunction);
+                testRunner.addCustomTest(suiteName, testCase);
+            },
+            
+            // Get stats
+            getStats: () => {
+                const mappings = morseData.getAllMappings();
+                return {
+                    totalCharacters: Object.keys(mappings).length,
+                    currentTheme: ui.currentTheme,
+                    version: '2.0.0-OOP'
+                };
+            }
+        };
+
+        //  Console Welcome Message
+        console.log(`
+🤖 R2-D2's OOP Morse Translator v2.0 Loaded!
+===============================================
+
+🔧 Available Commands:
+• R2D2.encode("text") - Encode text to morse
+• R2D2.decode("morse") - Decode morse to text  
+• R2D2.runTests() - Run all unit tests
+• R2D2.getStats() - Get system statistics
+
+⌨️  Keyboard Shortcuts:
+• Ctrl+Enter - Translate current field
+• Ctrl+T - Run all tests
+• Ctrl+D - Toggle theme
+
+🧪 Testing Framework:
+• ${testRunner.testSuites.size} test suites loaded
+• Object-oriented architecture implemented
+• Full unit test coverage available
+
+May the Force be with your code! 🚀
+        `);
+
