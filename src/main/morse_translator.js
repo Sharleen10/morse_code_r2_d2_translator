@@ -41,3 +41,51 @@
                 return { ...this.MORSE_CODE_MAP };
             }
         }
+
+        /**
+         * MorseTranslator - Main translator orchestrator
+         */
+        class MorseTranslator {
+            constructor() {
+                this.morseData = new MorseCodeData();
+                this.encoder = new MorseEncoder(this.morseData);
+                this.decoder = new MorseDecoder(this.morseData);
+            }
+
+            encodeToMorse() {
+                const input = document.getElementById('textInput').value;
+                
+                if (!this.encoder.validateInput(input)) {
+                    ui.showStatus('⚠️ Please enter a message to encode!', 'error');
+                    return;
+                }
+
+                const output = this.encoder.encode(input);
+                document.getElementById('morseOutput').value = output;
+                
+                ui.showStatus(`🤖 R2-D2 says: Message encoded successfully! ${output.length} characters of galactic morse code generated.`, 'success');
+            }
+
+            decodeFromMorse() {
+                const input = document.getElementById('morseInput').value;
+                
+                if (!this.decoder.validateInput(input)) {
+                    ui.showStatus('⚠️ Please enter morse code to decode!', 'error');
+                    return;
+                }
+
+                const output = this.decoder.decode(input);
+                document.getElementById('textOutput').value = output;
+                
+                ui.showStatus(`🤖 R2-D2 says: Message decoded successfully! "${output}"`, 'success');
+            }
+
+            // Public methods for testing
+            encode(text) {
+                return this.encoder.encode(text);
+            }
+
+            decode(code) {
+                return this.decoder.decode(code);
+            }
+        }
