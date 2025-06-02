@@ -153,3 +153,80 @@
                 oscillator.stop(startTime + duration);
             }
         }
+
+         /**
+         *  UIManager - Handles user interface interactions
+         */
+        class UIManager {
+            constructor() {
+                this.currentTheme = 'dark';
+            }
+
+            showStatus(message, type) {
+                const statusDiv = document.getElementById('statusMessage');
+                statusDiv.textContent = message;
+                statusDiv.className = `status ${type}`;
+                
+                // Auto-hide after 3 seconds
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                    statusDiv.className = '';
+                }, 3000);
+            }
+
+            clearText() {
+                document.getElementById('textInput').value = '';
+                document.getElementById('morseOutput').value = '';
+                this.showStatus('🗑️ Text fields cleared!', 'success');
+            }
+
+            clearMorse() {
+                document.getElementById('morseInput').value = '';
+                document.getElementById('textOutput').value = '';
+                this.showStatus('🗑️ Morse fields cleared!', 'success');
+            }
+
+            toggleTheme() {
+                this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', this.currentTheme);
+                this.showStatus(`🌓 Theme changed to ${this.currentTheme} mode!`, 'success');
+            }
+
+            createStarfield() {
+                const starfield = document.getElementById('starfield');
+                const numStars = 100;
+                
+                for (let i = 0; i < numStars; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    starfield.appendChild(star);
+                }
+            }
+
+            createMorseChart() {
+                const chartDiv = document.getElementById('morseChart');
+                const morseData = new MorseCodeData();
+                
+                Object.entries(morseData.getAllMappings()).forEach(([letter, morse]) => {
+                    const item = document.createElement('div');
+                    item.className = 'chart-item';
+                    item.innerHTML = `<span style="color: var(--text-accent);">${letter}</span><span style="color: var(--text-primary);">${morse}</span>`;
+                    chartDiv.appendChild(item);
+                });
+            }
+
+            initialize() {
+                this.createStarfield();
+                this.createMorseChart();
+                
+                // Add some sample data
+                document.getElementById('textInput').value = "Help me Obi-Wan!";
+                document.getElementById('morseInput').value = ".... . .-.. .--. / -- .";
+                
+                this.showStatus('🤖 R2-D2 is online and ready for galactic communications!', 'success');
+            }
+        }
+
