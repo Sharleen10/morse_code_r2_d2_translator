@@ -35,6 +35,25 @@
     |_|
             </div>
         </div>
+
+    <div class="main-content">
+            <!-- Text to Morse Section -->
+            <div class="translator-section">
+                <h2 class="section-title">📤 Encode Message to Morse Code</h2>
+                <div class="input-group">
+                    <label for="textInput">Enter your secret message:</label>
+                    <textarea id="textInput" placeholder="Help me Obi-Wan! You're my only hope..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button onclick="translator.encodeToMorse()">🔐 Encode to Morse</button>
+                    <button class="sound-btn" onclick="sound.playMorseSound('morseOutput')">🔊 Play Morse</button>
+                    <button class="clear-btn" onclick="ui.clearText()">🗑️ Clear</button>
+                </div>
+                <div class="input-group">
+                    <label for="morseOutput">Morse Code Output:</label>
+                    <textarea id="morseOutput" readonly placeholder="Morse code will appear here..."></textarea>
+                </div>
+            </div>
       
 </body>
 </html>
